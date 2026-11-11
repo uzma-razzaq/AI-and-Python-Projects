@@ -1,0 +1,84 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyMs3T+RAiTFwFR819IdGOXe",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/uzma-razzaq/AI-and-Python-Projects/blob/main/app.py\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import streamlit as st\n",
+        "from sklearn.ensemble import RandomForestClassifier\n",
+        "import numpy as np\n",
+        "\n",
+        "# 1. Website ka Design (Frontend)\n",
+        "st.title(\"🛡️ AI Phishing Link Detector\")\n",
+        "st.write(\"Developed by Uzma Razzaq | Cybersecurity AI Tool\")\n",
+        "st.write(\"Neeche koi bhi website link paste karein aur check karein ke woh Safe hai ya Hacker ka link:\")\n",
+        "\n",
+        "# 2. Chota AI Model Train Karna (Backend Dimagh)\n",
+        "# Features: [Link ki Lambai, Dots ki Tadaad, Kya '@' ka nishan hai (1=Yes, 0=No)]\n",
+        "X_train = np.array((\n",
+        "    (18, 1, 0),   # Safe: google.com\n",
+        "    (22, 2, 0),   # Safe: www.wikipedia.org\n",
+        "    (75, 5, 1),   # Danger: lamba link + @ sign\n",
+        "    (90, 6, 1),   # Danger: bohot lamba + zyada dots\n",
+        "    (25, 1, 0),   # Safe: github.com\n",
+        "    (82, 4, 1)    # Danger: phishing link\n",
+        "))\n",
+        "y_train = np.array((0, 0, 1, 1, 0, 1)) # 0 = Safe, 1 = Phishing (Danger)\n",
+        "\n",
+        "model = RandomForestClassifier(random_state=42)\n",
+        "model.fit(X_train, y_train)\n",
+        "\n",
+        "# 3. User se Link Lena aur Result Dikhana\n",
+        "url = st.text_input(\"Website Link Yahan Likhein (e.g., https://google.com):\")\n",
+        "\n",
+        "if st.button(\"Check Security Now\"):\n",
+        "    if url:\n",
+        "        # Link ki khasoosiyat nikalna\n",
+        "        length = len(url)\n",
+        "        dots = url.count('.')\n",
+        "        has_at = 1 if '@' in url else 0\n",
+        "\n",
+        "        # AI se faisla karwana\n",
+        "        features = np.array(((length, dots, has_at),))\n",
+        "        prediction = model.predict(features)\n",
+        "\n",
+        "        if prediction.item() == 1:\n",
+        "            st.error(\"⚠️ DANGER: Yeh Phishing (Hacker) Link ho sakta hai! Is par click mat karein.\")\n",
+        "        else:\n",
+        "            st.success(\"✅ SAFE: Yeh website link bilkul mehfooz lag raha hai.\")\n",
+        "    else:\n",
+        "        st.warning(\"Pehle upar box mein koi link paste karein!\")\n"
+      ],
+      "metadata": {
+        "id": "QpW3VWuC2h3t"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
